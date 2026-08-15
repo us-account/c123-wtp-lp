@@ -3,11 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Google Takeoutの2回分の保存済みデータをPC内だけで比較する、C123の販売前WTP検証ページです。" />
+    <meta name="description" content="Google Takeoutの2時点の保存済みデータをPC内で比較し、Googleマップ保存地点の追加・消失・変更候補・要確認を整理するC123の販売ページです。" />
     <link rel="canonical" href="https://us-account.github.io/c123-wtp-lp/" />
-    <title>C123｜Googleマップ保存地点の差分確認</title>
-    <link rel="stylesheet" href="styles.css?v=20260812" />
-    <script src="app.js?v=20260812" defer></script>
+    <title>C123｜Googleマップ保存地点の差分チェック｜販売中</title>
+    <link rel="stylesheet" href="styles.css?v=20260816" />
   </head>
   <body>
     <header class="site-header">
@@ -15,7 +14,7 @@
         <span class="brand-mark" aria-hidden="true">C</span>
         <span>C123</span>
       </a>
-      <span class="status-chip">販売前・需要検証中</span>
+      <span class="status-chip">販売中</span>
     </header>
 
     <main id="top">
@@ -27,23 +26,21 @@
             Google Takeoutの2回分のバックアップをPC内だけで比較して、追加・消失・変更候補を一覧化。Googleアカウント連携なし。保存地点データを外部へ送りません。
           </p>
 
-          <div class="price-row" aria-label="予定価格 買い切り 2,980円">
+          <div class="price-row" aria-label="買い切り 2,980円">
             <span class="price-label">買い切り</span>
             <span class="price">2,980<small>円</small></span>
           </div>
 
           <div class="hero-actions">
-            <button class="button button-primary js-open-intent" type="button" data-event="wtp_price_cta_click">
-              2,980円なら購入したい
-            </button>
+            <a class="button button-primary" href="https://smallapplab.booth.pm/items/8717210">BOOTHで購入する</a>
             <a class="text-link" href="#sample">サンプル結果を見る <span aria-hidden="true">↓</span></a>
           </div>
-          <p class="cta-note">現在は販売前です。CTAを押しても料金は発生しません。</p>
+          <p class="cta-note">購入・決済・ダウンロードはBOOTHで行います。</p>
 
-          <ul class="trust-list" aria-label="製品の予定仕様">
+          <ul class="trust-list" aria-label="製品仕様">
             <li>端末内で処理</li>
             <li>Googleログイン不要</li>
-            <li>買い切り予定</li>
+            <li>買い切り</li>
           </ul>
         </div>
 
@@ -83,27 +80,15 @@
       <section class="qualification-section" aria-labelledby="qualification-title">
         <div class="section-shell qualification-grid">
           <div>
-            <p class="eyebrow">対象ユーザーの確認</p>
-            <h2 id="qualification-title">どちらか1つでも当てはまりますか？</h2>
-            <p class="qualification-lead">各項目を1タップで回答できます。回答によって価格やページ内容が隠れることはありません。</p>
+            <p class="eyebrow">対象ユーザー</p>
+            <h2 id="qualification-title">こんな方に向いています</h2>
+            <p class="qualification-lead">保存地点の変化を、2時点のバックアップから落ち着いて確認したい方のためのツールです。</p>
           </div>
-          <form id="qualification-form" class="qualification-card">
-            <fieldset>
-              <legend><span>A</span> Google Mapsの保存地点が50件以上</legend>
-              <div class="choice-row">
-                <label><input type="radio" name="qualified-a" value="yes" /> <span>YES</span></label>
-                <label><input type="radio" name="qualified-a" value="no" /> <span>NO</span></label>
-              </div>
-            </fieldset>
-            <fieldset>
-              <legend><span>B</span> 複数の保存リストを長期間使っている</legend>
-              <div class="choice-row">
-                <label><input type="radio" name="qualified-b" value="yes" /> <span>YES</span></label>
-                <label><input type="radio" name="qualified-b" value="no" /> <span>NO</span></label>
-              </div>
-            </fieldset>
-            <p id="qualification-status" class="qualification-status" role="status" aria-live="polite">A・Bの両方に回答してください。</p>
-          </form>
+          <ul class="qualification-card qualification-list">
+            <li>Google Mapsの保存地点が50件以上</li>
+            <li>複数の保存リストを長期間使用</li>
+            <li>前回から増えた／減った地点を確認したい</li>
+          </ul>
         </div>
       </section>
 
@@ -118,7 +103,7 @@
               Google Mapsを長く使うと、行きたい場所、お気に入り、旅行候補など複数のリストに保存地点が増えていきます。
             </p>
             <p>
-              ところが現在の一覧だけを見ても、<strong>「前はあったのに、今は見当たらない場所」</strong>を把握するのは簡単ではありません。C123は、過去と現在のバックアップを比較することで、その差を確認しやすくする製品構想です。
+              ところが現在の一覧だけを見ても、<strong>「前はあったのに、今は見当たらない場所」</strong>を把握するのは簡単ではありません。C123は、過去と現在のバックアップを比較することで、その差を確認しやすくするツールです。
             </p>
           </div>
         </div>
@@ -128,7 +113,7 @@
         <div class="section-heading">
           <p class="eyebrow">すべて架空のsyntheticデータ</p>
           <h2 id="sample-title">差分を4つに分けて、迷わず確認。</h2>
-          <p>自動で断定できない地点は「要確認」に分け、無理な自動判定を避ける予定です。</p>
+          <p>自動で断定できない地点は「要確認」に分け、無理な自動判定を避けます。結果はCSVまたはHTMLで保存できます。</p>
         </div>
 
         <div class="result-board">
@@ -215,7 +200,7 @@
             </li>
           </ol>
           <p class="steps-footnote">
-            初回は現在のTakeoutを基準として保管し、次回取得したバックアップとの比較に使用する想定です。Google Takeoutの取得自体は利用者が行います。
+            初回は現在のTakeoutを基準として保管し、次回取得したバックアップとの比較に使用できます。C123はChrome / Edgeで、index.htmlをfile://から開いてローカル実行します。Google Takeoutの取得自体は利用者が行います。
           </p>
         </div>
       </section>
@@ -225,24 +210,24 @@
           <div class="privacy-intro">
             <span class="privacy-mark" aria-hidden="true">✓</span>
             <div>
-              <p class="eyebrow">予定している製品仕様</p>
+              <p class="eyebrow">製品仕様</p>
               <h2 id="privacy-title">保存地点データはPC内で処理。</h2>
-              <p>個人的な行動履歴になり得るデータだから、外部に預けない設計を予定しています。</p>
-              <a class="text-link privacy-link" href="privacy.html">需要検証時のプライバシー表示を確認する →</a>
+              <p>個人的な行動履歴になり得るデータだから、比較処理はブラウザ内で完結し、保存地点データを外部へ送りません。</p>
+              <a class="text-link privacy-link" href="privacy.html">プライバシー表示を確認する →</a>
             </div>
           </div>
           <div class="privacy-points">
             <article>
               <strong>PC内で処理</strong>
-              <span>比較処理は利用者の端末内で完結する予定です。</span>
+              <span>比較処理は利用者の端末内で完結します。</span>
             </article>
             <article>
               <strong>アカウント連携なし</strong>
-              <span>GoogleログインやOAuth連携は使用しない予定です。</span>
+              <span>GoogleログインやOAuth連携は使用しません。</span>
             </article>
             <article>
               <strong>アップロードなし</strong>
-              <span>保存地点をサーバーへ送信しない設計を予定しています。</span>
+              <span>保存地点をサーバーへ送信しません。</span>
             </article>
           </div>
         </div>
@@ -255,10 +240,12 @@
             <h2 id="limits-title">復元ツールではありません。</h2>
           </div>
           <ul>
-            <li>C123は、2つのTakeoutバックアップに含まれる差を確認しやすくする製品構想です。</li>
+            <li>C123は、2つのTakeoutバックアップに含まれる差を確認しやすくするツールです。</li>
             <li>消えた保存地点をGoogle Mapsへ復元する機能ではありません。</li>
             <li>過去バックアップにも存在しない場所は確認・復元できません。</li>
-            <li>常時監視、自動バックアップ、Google API接続は行わない予定です。</li>
+            <li>保存地点の自動監視、常時監視、自動バックアップは行いません。</li>
+            <li>Googleマップ上の保存地点を自動復元する機能ではありません。</li>
+            <li>Google APIへ接続しません。</li>
             <li>Google LLCが提供・承認する公式サービスではありません。</li>
           </ul>
         </div>
@@ -266,83 +253,19 @@
 
       <section class="final-cta section-shell" aria-labelledby="final-cta-title">
         <div class="final-cta-card">
-          <p class="eyebrow">C123 販売前WTP検証</p>
-          <h2 id="final-cta-title">この機能に、<br />買い切り2,980円を払いますか？</h2>
-          <p>対象は、保存地点が50件以上ある方、または複数の保存リストを長期間使っている方です。</p>
+          <p class="eyebrow">C123 販売中</p>
+          <h2 id="final-cta-title">2時点のTakeoutから、<br />保存地点の差分を確認。</h2>
+          <p>Chrome / Edgeで使える、インストール不要のlocal-onlyブラウザツールです。</p>
           <div class="final-price"><span>買い切り</span><strong>2,980<small>円</small></strong></div>
-          <button class="button button-primary button-light js-open-intent" type="button" data-event="wtp_price_cta_click">
-            2,980円なら購入したい
-          </button>
-          <small>現在は需要検証中です。ここで料金は発生しません。</small>
+          <a class="button button-primary button-light" href="https://smallapplab.booth.pm/items/8717210">BOOTHで購入する</a>
+          <small>購入・決済・ダウンロードはBOOTHで行います。</small>
         </div>
       </section>
     </main>
 
     <footer class="site-footer section-shell">
-      <span>C123 — 販売前WTP検証</span>
+      <span>C123 — 販売中</span>
       <span><a href="privacy.html">プライバシー表示</a> ・ Google Maps / Google Takeoutの公式サービスではありません。</span>
     </footer>
-
-    <dialog id="intent-dialog" aria-labelledby="dialog-title">
-      <div class="dialog-card">
-        <button class="dialog-close" type="button" aria-label="閉じる">×</button>
-        <p class="eyebrow">販売前の需要検証</p>
-        <h2 id="dialog-title">購入希望を教えてください</h2>
-        <p class="dialog-notice">
-          現在は販売前の需要検証中です。<strong>ここで料金は発生しません。</strong>販売開始時の連絡を希望する場合のみ登録してください。
-        </p>
-
-        <form id="intent-form" novalidate>
-          <label>
-            <span>メールアドレス</span>
-            <input type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
-            <small>需要検証と販売開始時の連絡に使用します。保存地点の内容は入力しないでください。</small>
-          </label>
-
-          <label>
-            <span>保存地点数帯</span>
-            <select name="saved_count_bucket" required>
-              <option value="">選択してください</option>
-              <option value="0-49">0〜49</option>
-              <option value="50-99">50〜99</option>
-              <option value="100-299">100〜299</option>
-              <option value="300-499">300〜499</option>
-              <option value="500-plus">500以上</option>
-            </select>
-          </label>
-
-          <fieldset>
-            <legend>複数リストを長期利用していますか？</legend>
-            <label class="radio-label"><input type="radio" name="multi_list_long_term" value="yes" required /> YES</label>
-            <label class="radio-label"><input type="radio" name="multi_list_long_term" value="no" /> NO</label>
-          </fieldset>
-
-          <fieldset>
-            <legend>保存地点の消失・表示不具合を経験しましたか？</legend>
-            <label class="radio-label"><input type="radio" name="issue_experience" value="yes" required /> YES</label>
-            <label class="radio-label"><input type="radio" name="issue_experience" value="no" /> NO</label>
-          </fieldset>
-
-          <div class="honeypot" aria-hidden="true">
-            <label>会社名 <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
-          </div>
-
-          <label class="consent-label">
-            <input type="checkbox" name="privacy_consent" value="accepted" required />
-            <span>入力した情報をC123の需要検証および販売開始時の連絡のために使用することに同意します（<a href="privacy.html" target="_blank" rel="noopener">プライバシー表示</a>）</span>
-          </label>
-
-          <button class="button button-primary form-submit" type="submit">購入希望を登録</button>
-          <p class="form-privacy">入力情報は需要検証用のScript Propertiesへ送信します。外部Analyticsは使用していません。</p>
-        </form>
-
-        <div id="form-success" class="form-success" role="status" hidden>
-          <span aria-hidden="true">✓</span>
-          <h3>購入希望を受け付けました</h3>
-          <p>ご登録ありがとうございます。販売開始時の連絡をお待ちください。ここで料金は発生しません。</p>
-          <button class="button button-secondary dialog-done" type="button">閉じる</button>
-        </div>
-      </div>
-    </dialog>
   </body>
 </html>

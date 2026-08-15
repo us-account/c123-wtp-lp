@@ -208,9 +208,6 @@ h3 {
 }
 
 .button:focus-visible,
-.dialog-close:focus-visible,
-input:focus-visible,
-select:focus-visible,
 a:focus-visible {
   outline: 3px solid rgba(34, 81, 255, 0.3);
   outline-offset: 3px;
@@ -418,103 +415,17 @@ a:focus-visible {
   box-shadow: 0 18px 55px rgba(28, 42, 82, 0.08);
 }
 
-.qualification-card fieldset {
+.qualification-list {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 20px;
+  gap: 16px;
   margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.qualification-card fieldset + fieldset {
-  margin-top: 22px;
-  padding-top: 22px;
-  border-top: 1px solid var(--line);
-}
-
-.qualification-card legend {
-  float: left;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
+  padding: 28px 28px 28px 52px;
   color: var(--ink);
-  font-size: 14px;
   font-weight: 750;
 }
 
-.qualification-card legend span {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 9px;
-  color: var(--blue-dark);
-  background: var(--blue-pale);
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.choice-row {
-  display: flex;
-  gap: 8px;
-}
-
-.choice-row label {
-  position: relative;
-  cursor: pointer;
-}
-
-.choice-row input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.choice-row span {
-  display: grid;
-  place-items: center;
-  min-width: 66px;
-  min-height: 42px;
-  border: 1px solid #cdd5e5;
-  border-radius: 10px;
-  color: var(--ink-soft);
-  background: white;
-  font-size: 12px;
-  font-weight: 850;
-  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
-}
-
-.choice-row input:focus-visible + span {
-  outline: 3px solid rgba(34, 81, 255, 0.3);
-  outline-offset: 2px;
-}
-
-.choice-row input:checked + span {
-  border-color: var(--blue);
-  color: var(--blue-dark);
-  background: var(--blue-pale);
-}
-
-.qualification-status {
-  margin: 24px 0 0;
-  padding: 11px 13px;
-  border-radius: 10px;
-  color: var(--ink-soft);
-  background: #f3f5f9;
-  font-size: 12px;
-}
-
-.qualification-status[data-state="qualified"] {
-  color: #16613f;
-  background: var(--green-pale);
-}
-
-.qualification-status[data-state="not-qualified"] {
-  color: #5f6675;
-  background: #f1f2f5;
+.qualification-list li::marker {
+  color: var(--blue);
 }
 
 .problem-grid {
@@ -798,149 +709,6 @@ a:focus-visible {
 
 .site-footer a { color: inherit; text-underline-offset: 3px; }
 
-dialog {
-  width: min(600px, calc(100% - 28px));
-  max-height: calc(100vh - 28px);
-  padding: 0;
-  border: 0;
-  border-radius: 22px;
-  color: var(--ink);
-  background: transparent;
-}
-
-dialog::backdrop {
-  background: rgba(13, 19, 38, 0.68);
-  backdrop-filter: blur(6px);
-}
-
-.dialog-card {
-  position: relative;
-  overflow-y: auto;
-  max-height: calc(100vh - 28px);
-  padding: 38px;
-  border-radius: 22px;
-  background: white;
-}
-
-.dialog-card h2 { margin-bottom: 12px; font-size: 32px; }
-.dialog-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border: 0;
-  border-radius: 50%;
-  color: var(--ink-soft);
-  background: #f0f2f7;
-  cursor: pointer;
-  font-size: 22px;
-}
-
-.dialog-notice {
-  padding: 14px 16px;
-  border-radius: 12px;
-  color: #394259;
-  background: var(--blue-pale);
-  font-size: 13px;
-}
-
-#intent-form > label,
-#intent-form fieldset {
-  display: block;
-  margin: 20px 0 0;
-}
-
-#intent-form label > span,
-#intent-form legend {
-  display: block;
-  margin-bottom: 7px;
-  color: var(--ink);
-  font-size: 13px;
-  font-weight: 750;
-}
-
-input[type="email"],
-select {
-  width: 100%;
-  min-height: 48px;
-  padding: 10px 12px;
-  border: 1px solid #cdd3e0;
-  border-radius: 10px;
-  color: var(--ink);
-  background: white;
-}
-
-.consent-label {
-  display: grid !important;
-  grid-template-columns: auto 1fr;
-  align-items: start;
-  gap: 10px;
-  padding: 14px;
-  border: 1px solid #d7ddea;
-  border-radius: 10px;
-  background: #f8f9fc;
-}
-
-.consent-label input { margin-top: 3px; }
-.consent-label span { margin: 0 !important; color: var(--ink-soft) !important; font-weight: 500 !important; line-height: 1.55; }
-.consent-label a { color: var(--blue-dark); font-weight: 750; }
-
-.honeypot {
-  position: absolute !important;
-  left: -10000px !important;
-  width: 1px !important;
-  height: 1px !important;
-  overflow: hidden !important;
-}
-
-#intent-form label small {
-  display: block;
-  margin-top: 5px;
-  color: var(--ink-soft);
-  font-size: 11px;
-}
-
-#intent-form fieldset {
-  padding: 0;
-  border: 0;
-}
-
-.radio-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin: 3px 16px 3px 0;
-  color: var(--ink-soft);
-  font-size: 13px;
-}
-
-.form-submit { width: 100%; margin-top: 24px; }
-.form-privacy { margin: 10px 0 0; color: var(--ink-soft); font-size: 11px; text-align: center; }
-
-.form-success {
-  padding: 36px 10px 10px;
-  text-align: center;
-}
-
-.form-success > span {
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  margin: 0 auto 18px;
-  border-radius: 50%;
-  color: white;
-  background: var(--green);
-  font-size: 24px;
-  font-weight: 900;
-}
-
-.form-success h3 { font-size: 24px; }
-.form-success p { color: var(--ink-soft); }
-
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;
@@ -1005,14 +773,7 @@ select {
   .limits-card { padding: 30px 24px; }
   .final-cta-card { padding: 52px 22px; }
   .site-footer { flex-direction: column; gap: 6px; }
-  .dialog-card { padding: 32px 20px 24px; }
-  .dialog-card h2 { padding-right: 24px; font-size: 28px; }
-  .radio-label { display: flex; margin-right: 0; }
   .qualification-card { padding: 22px 18px; }
-  .qualification-card fieldset { grid-template-columns: 1fr; gap: 14px; }
-  .qualification-card legend { float: none; }
-  .choice-row { display: grid; grid-template-columns: 1fr 1fr; }
-  .choice-row span { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

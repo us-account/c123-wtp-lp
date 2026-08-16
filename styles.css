@@ -443,6 +443,7 @@ a:focus-visible {
 
 .sample-section,
 .privacy-section,
+.faq-section,
 .limits-section,
 .final-cta {
   padding-block: 110px;
@@ -642,6 +643,36 @@ a:focus-visible {
 .privacy-points strong { margin-bottom: 8px; }
 .privacy-points span { color: var(--ink-soft); font-size: 13px; }
 
+.faq-section {
+  padding-top: 0;
+}
+
+.faq-list {
+  display: grid;
+  gap: 14px;
+}
+
+.faq-list details {
+  padding: 0 26px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: white;
+}
+
+.faq-list summary {
+  padding: 22px 34px 22px 0;
+  cursor: pointer;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.faq-list p {
+  max-width: 880px;
+  margin-bottom: 22px;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
 .limits-section { padding-top: 0; }
 
 .limits-card {
@@ -755,8 +786,10 @@ a:focus-visible {
   .sample-section,
   .steps-section,
   .privacy-section,
+  .faq-section,
   .limits-section,
   .final-cta { padding-block: 76px; }
+  .faq-section { padding-top: 0; }
   .limits-section { padding-top: 0; }
   .section-heading { margin-bottom: 32px; }
   .result-summary { grid-template-columns: 1fr 1fr; }
@@ -770,6 +803,7 @@ a:focus-visible {
   .steps-list li { padding: 22px 20px; }
   .privacy-intro { grid-template-columns: 1fr; padding: 30px 24px 24px; }
   .privacy-points article { padding: 22px 24px; }
+  .faq-list details { padding-inline: 20px; }
   .limits-card { padding: 30px 24px; }
   .final-cta-card { padding: 52px 22px; }
   .site-footer { flex-direction: column; gap: 6px; }

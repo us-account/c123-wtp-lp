@@ -740,6 +740,18 @@ a:focus-visible {
 
 .site-footer a { color: inherit; text-underline-offset: 3px; }
 
+.faq-guide-link {
+  margin: 24px 0 0;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.faq-guide-link a,
+.guide-document a {
+  color: var(--blue-dark);
+  text-underline-offset: 4px;
+}
+
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;
@@ -817,6 +829,136 @@ a:focus-visible {
 
 .privacy-page {
   background: #f5f7fc;
+}
+
+.guide-page {
+  background: #f5f7fc;
+}
+
+.guide-document {
+  width: min(840px, calc(100% - 40px));
+  margin-inline: auto;
+  padding-block: 58px 100px;
+}
+
+.guide-document > header {
+  padding: 48px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: white;
+  box-shadow: var(--shadow);
+}
+
+.guide-document h1 {
+  max-width: none;
+  margin-bottom: 20px;
+  font-size: clamp(38px, 6vw, 58px);
+}
+
+.guide-lead {
+  margin-bottom: 0;
+  color: var(--ink-soft);
+  font-size: 18px;
+}
+
+.guide-note {
+  margin: 28px 0 0;
+  padding: 18px 20px;
+  border-radius: 14px;
+  color: #6d4b00;
+  background: var(--amber-pale);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.guide-section {
+  padding: 52px 8px 0;
+}
+
+.guide-section + .guide-section {
+  margin-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.guide-section h2 {
+  margin-bottom: 18px;
+  font-size: clamp(27px, 4vw, 36px);
+}
+
+.guide-section p,
+.guide-section li {
+  color: var(--ink-soft);
+  font-size: 16px;
+}
+
+.guide-section ol,
+.guide-section ul {
+  padding-left: 24px;
+}
+
+.guide-section li + li {
+  margin-top: 10px;
+}
+
+.guide-checklist {
+  padding: 24px 26px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: white;
+}
+
+.guide-important {
+  padding: 22px 24px;
+  border-left: 5px solid var(--red);
+  border-radius: 0 14px 14px 0;
+  color: #742a38 !important;
+  background: var(--red-pale);
+  font-weight: 700;
+}
+
+.guide-product-card {
+  margin-top: 30px;
+  padding: 32px;
+  border-radius: var(--radius-md);
+  color: white;
+  background: #10235f;
+}
+
+.guide-product-card h3 {
+  font-size: 24px;
+}
+
+.guide-product-card p,
+.guide-product-card li {
+  color: #e4e9ff;
+}
+
+.guide-product-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.guide-product-actions .text-link {
+  color: white;
+}
+
+.guide-sources {
+  margin-top: 58px;
+  padding: 28px;
+  border-radius: var(--radius-md);
+  background: #eaf0ff;
+}
+
+.guide-sources h2 {
+  margin-bottom: 12px;
+  font-size: 22px;
+}
+
+.guide-sources li {
+  font-size: 13px;
 }
 
 .privacy-document {
@@ -905,4 +1047,14 @@ a:focus-visible {
   .privacy-document-grid { grid-template-columns: 1fr; }
   .privacy-document-wide { grid-column: auto; }
   .privacy-document-grid section { padding: 24px 20px; }
+  .guide-document { width: min(100% - 28px, 840px); padding-block: 34px 76px; }
+  .guide-document > header { padding: 30px 22px; }
+  .guide-document h1 { font-size: 36px; }
+  .guide-lead { font-size: 16px; }
+  .guide-section { padding: 42px 2px 0; }
+  .guide-checklist,
+  .guide-product-card,
+  .guide-sources { padding: 22px 20px; }
+  .guide-product-actions { align-items: stretch; flex-direction: column; }
+  .guide-product-actions .text-link { align-self: flex-start; }
 }

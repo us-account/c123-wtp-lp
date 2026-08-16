@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://us-account.github.io/c123-wtp-lp/sitemap.xml

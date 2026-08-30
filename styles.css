@@ -242,6 +242,22 @@ a:focus-visible {
   font-size: 13px;
 }
 
+.try-link {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.try-link a {
+  color: var(--blue-dark);
+}
+
+.try-note {
+  margin: 0 0 24px;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
 .trust-list {
   display: flex;
   flex-wrap: wrap;

@@ -7,13 +7,13 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com; connect-src https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com; font-src 'self'; object-src 'none'; frame-src 'none'; media-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'"
     />
-    <meta name="robots" content="noindex" />
+    <link rel="canonical" href="https://us-account.github.io/c123-wtp-lp/try/" />
     <meta
       name="description"
-      content="C123の無料診断版（beta）。2時点のGoogle Takeoutをブラウザ内だけで比較し、差分の件数と先頭3件を確認できます。ファイルの内容は端末外へ送信しません。"
+      content="2時点のGoogle Takeout（Googleマップの保存済みバックアップ）をブラウザ内だけで比較し、追加・今回見つからない・変更の可能性・要確認の件数を確認できる無料診断です。差分の詳細は先頭3件まで表示します。Google公式ツールではなく、Google側から地点を復元する機能ではありません。ファイルの内容は端末外へ送信しません。beta版。"
     />
-    <title>無料診断（beta）｜C123｜Googleマップ保存地点の差分チェック</title>
-    <link rel="stylesheet" href="styles.css?v=20260830" />
+    <title>Googleマップ保存済みが消えた？2時点のGoogle Takeoutを比較｜無料診断(beta)</title>
+    <link rel="stylesheet" href="styles.css?v=20260831" />
     <!-- アクセス解析（GA4）: ファネル計測のためのイベント名のみを送信します。ユーザーのファイルに由来する値は一切送信しません。 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-28112XXNX8"></script>
     <script src="analytics.js"></script>
@@ -67,6 +67,14 @@
 
       <section class="steps" aria-labelledby="steps-title">
         <h2 id="steps-title">無料診断</h2>
+
+        <p class="sample-note">
+          <strong>データは自動では読み込まれません。</strong>
+          下のSTEP 1・STEP 2で、お客様ご自身の2時点のGoogle Takeoutを選んでください。
+          このサイトに置いてある <code>try/testdata</code> フォルダは、動作確認用の
+          <strong>架空のサンプルデータ（合成データ）</strong>で、実在の場所や個人情報は含まれていません。
+          サンプルは自動で投入されないため、試す場合もお客様が明示的に選択する必要があります。
+        </p>
 
         <div class="pickers">
           <article id="before-card" class="picker">

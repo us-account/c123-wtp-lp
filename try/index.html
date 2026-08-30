@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com; connect-src https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com; font-src 'self'; object-src 'none'; frame-src 'none'; media-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="robots" content="noindex" />
+    <meta
+      name="description"
+      content="C123の無料診断版（beta）。2時点のGoogle Takeoutをブラウザ内だけで比較し、差分の件数と先頭3件を確認できます。ファイルの内容は端末外へ送信しません。"
+    />
+    <title>無料診断（beta）｜C123｜Googleマップ保存地点の差分チェック</title>
+    <link rel="stylesheet" href="styles.css?v=20260830" />
+    <!-- アクセス解析（GA4）: ファネル計測のためのイベント名のみを送信します。ユーザーのファイルに由来する値は一切送信しません。 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-28112XXNX8"></script>
+    <script src="analytics.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <a class="brand" href="../">C123</a>
+      <span class="badge">無料診断版 beta</span>
+    </header>
+
+    <main>
+      <section class="intro">
+        <p class="eyebrow">購入前のお試し</p>
+        <h1>あなた自身のGoogle Takeoutで、無料で動作を確認できます</h1>
+        <p class="lead">
+          2時点のGoogle Takeoutを選ぶと、Googleマップ保存地点の
+          <strong>追加 / 今回見つからない / 変更の可能性 / 要確認</strong>
+          の件数を表示します。差分の詳細は、無料診断版では合計で先頭3件までを表示します。
+        </p>
+        <p class="privacy-highlight">
+          <span aria-hidden="true">🔒</span>
+          解析はすべてこのページを開いたブラウザの中だけで行います。お客様のファイルの内容は端末外へ送信しません。
+        </p>
+      </section>
+
+      <section class="notice" aria-labelledby="notice-title">
+        <h2 id="notice-title">ご利用前に必ずお読みください</h2>
+        <ul class="notice-list">
+          <li>比較には<strong>2時点分のGoogle Takeout</strong>（前回の書き出しと今回の書き出し）が必要です。1つだけでは比較できません。</li>
+          <li>これは<strong>Google側から保存地点を復元する機能ではありません</strong>。手元の2つの書き出しを比べて差分を示すだけのツールです。</li>
+          <li>C123は<strong>Google公式ツールではありません</strong>。Google LLCとは関係ありません。</li>
+          <li>同一地点かどうかを<strong>自動判定できない項目は「要確認」</strong>として件数に計上されます。削除や消失を断定するものではありません。</li>
+          <li><strong>お客様のファイルの内容（ファイル名・地点名・住所・座標・CSVの中身）は端末外へ送信しません。</strong>アップロードも保存もしません。</li>
+          <li>本ツールは<strong>beta版</strong>です。判定結果に誤りが含まれる可能性があります。</li>
+        </ul>
+        <p class="analytics-note">
+          本ページはアクセス解析を使用します。お客様のファイルの内容は送信されません。
+        </p>
+      </section>
+
+      <section class="env" aria-labelledby="env-title">
+        <h2 id="env-title">対応ブラウザ・対応環境</h2>
+        <ul class="env-list">
+          <li><strong>対応ブラウザ：</strong>Google Chrome（現行版） / Microsoft Edge（現行版）</li>
+          <li><strong>対応OS：</strong>Windows 10 / Windows 11 / macOS</li>
+          <li><strong>入力：</strong>Google Takeoutを解凍したフォルダ、またはその中の保存済みリストCSV（UTF-8）</li>
+          <li><strong>フォルダ選択</strong>にはChrome / Edgeのフォルダ選択機能を使用します。Safari・Firefoxおよびスマートフォンのブラウザでは、フォルダ選択が動作しない場合があります。その場合はCSVを直接選んでください。</li>
+          <li>インターネット接続がなくても診断できます（アクセス解析の送信のみ行われません）。</li>
+        </ul>
+      </section>
+
+      <section class="steps" aria-labelledby="steps-title">
+        <h2 id="steps-title">無料診断</h2>
+
+        <div class="pickers">
+          <article id="before-card" class="picker">
+            <p class="step-label">STEP 1</p>
+            <h3>前回のデータ（古い方）</h3>
+            <p class="hint">例：先月書き出したGoogle Takeout</p>
+            <label class="file-button">
+              <span id="before-folder-label">前回のフォルダを選ぶ</span>
+              <input id="before-folder" type="file" webkitdirectory multiple />
+            </label>
+            <details>
+              <summary>フォルダを選べない場合</summary>
+              <label class="file-button secondary">
+                前回のCSVを選ぶ
+                <input id="before-files" type="file" accept=".csv,text/csv" multiple />
+              </label>
+            </details>
+            <p id="before-status" class="status" aria-live="polite">まだ選択されていません</p>
+          </article>
+
+          <article id="after-card" class="picker">
+            <p class="step-label">STEP 2</p>
+            <h3>今回のデータ（新しい方）</h3>
+            <p class="hint">例：今日書き出したGoogle Takeout</p>
+            <label class="file-button">
+              <span id="after-folder-label">今回のフォルダを選ぶ</span>
+              <input id="after-folder" type="file" webkitdirectory multiple />
+            </label>
+            <details>
+              <summary>フォルダを選べない場合</summary>
+              <label class="file-button secondary">
+                今回のCSVを選ぶ
+                <input id="after-files" type="file" accept=".csv,text/csv" multiple />
+              </label>
+            </details>
+            <p id="after-status" class="status" aria-live="polite">まだ選択されていません</p>
+          </article>
+        </div>
+
+        <div class="run">
+          <p class="step-label">STEP 3</p>
+          <button id="diagnose" type="button" disabled>無料で診断する</button>
+          <p id="message" class="message" aria-live="polite">前回と今回のデータを選んでください。</p>
+        </div>
+      </section>
+
+      <section id="result" class="result" tabindex="-1" hidden aria-labelledby="result-title">
+        <h2 id="result-title">診断結果</h2>
+
+        <div class="counts">
+          <div class="count-card removed">
+            <span class="count-label">今回見つからない</span>
+            <strong id="removed-count">0</strong>
+            <small>前回にはあった場所</small>
+          </div>
+          <div class="count-card added">
+            <span class="count-label">今回増えた</span>
+            <strong id="added-count">0</strong>
+            <small>今回だけにある場所</small>
+          </div>
+          <div class="count-card changed">
+            <span class="count-label">変更の可能性</span>
+            <strong id="changed-count">0</strong>
+            <small>情報が変わった可能性</small>
+          </div>
+          <div class="count-card review">
+            <span class="count-label">要確認</span>
+            <strong id="review-count">0</strong>
+            <small>自動で判断しなかった場所</small>
+          </div>
+        </div>
+
+        <p id="total-line" class="total-line"></p>
+
+        <h3>差分の詳細（無料診断版は先頭3件まで）</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>状態</th><th>前回</th><th>今回</th></tr>
+            </thead>
+            <tbody id="preview-body"></tbody>
+          </table>
+        </div>
+
+        <p id="locked-line" class="locked-line" hidden></p>
+
+        <div class="cta">
+          <p class="cta-title">4件目以降の詳細は有料版で確認できます</p>
+          <p class="cta-body">
+            有料版のC123では、差分の全件表示と、結果のCSV / HTML保存に対応しています。
+          </p>
+          <a
+            id="booth-cta"
+            class="cta-button"
+            href="https://smallapplab.booth.pm/items/8717210?utm_source=c123_try&amp;utm_medium=referral&amp;utm_campaign=c123_free_diagnostic"
+            rel="noopener"
+            >BOOTHで有料版を見る</a
+          >
+          <p class="cta-note">購入・決済・ダウンロードはBOOTHで行います。</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <p>
+        C123 無料診断版（beta）／ SmallApp Lab。C123はGoogle公式ツールではなく、Google側から保存地点を復元するものではありません。
+      </p>
+      <p><a href="../">C123の販売ページへ戻る</a> ／ <a href="../privacy.html">プライバシーポリシー</a></p>
+    </footer>
+
+    <script src="diagnose.js"></script>
+  </body>
+</html>

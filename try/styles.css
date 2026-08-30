@@ -134,6 +134,23 @@ p {
 
 /* ---- 入力 ---- */
 
+.sample-note {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: var(--surface-soft);
+  font-size: 0.92rem;
+}
+
+.sample-note code {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.88em;
+  background: #e7ecf5;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
 .pickers {
   display: grid;
   grid-template-columns: 1fr 1fr;

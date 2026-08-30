@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
+Disallow: /c123-wtp-lp/try/testdata/
 Sitemap: https://us-account.github.io/c123-wtp-lp/sitemap.xml

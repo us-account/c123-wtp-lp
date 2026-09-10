@@ -622,6 +622,11 @@
     byId("booth-cta").addEventListener("click", function () {
       track("booth_click");
     });
+    if (byId("booth-cta-top")) {
+      byId("booth-cta-top").addEventListener("click", function () {
+        track("booth_click");
+      });
+    }
 
     refreshReadiness();
   }

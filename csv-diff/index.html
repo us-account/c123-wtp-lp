@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2つの表の不一致チェック（無料・ブラウザだけで動く）｜Us.Tool</title>
+<meta name="description" content="2つのCSV（ExcelやGoogleスプレッドシートからコピーした表）を貼ると、キーの列で突き合わせて、違う行・片方にしかない行だけを出します。データはこのブラウザの外に送りません。">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1f2a44;--sub:#5b6476;--line:#d5dbe3;--accent:#0f7c7a;--ng:#fde2e2;--ngink:#b42318;--ok:#dff3f2}
+@media (prefers-color-scheme:dark){:root{--bg:#14181f;--card:#1d232c;--ink:#e6e9ee;--sub:#a3acba;--line:#333c48;--accent:#4fc1bd;--ng:#4a2323;--ngink:#ff9a8f;--ok:#1f3b3a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;line-height:1.6}
+main{max-width:1080px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.5rem;margin:0 0 4px}
+.lead{color:var(--sub);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+ol.how{margin:0;padding-left:1.3em}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+label{font-weight:600;display:block;margin-bottom:4px}
+textarea{width:100%;min-height:180px;font-family:ui-monospace,Consolas,monospace;font-size:13px;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+button{background:var(--accent);color:#fff;border:0;border-radius:6px;padding:8px 14px;font-size:14px;cursor:pointer}
+button.sec{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+select,input[type=file]{font-size:14px}
+select{padding:6px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.sum{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.pill{border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:13px}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;white-space:nowrap}
+th{background:var(--bg)}
+td.ng{background:var(--ng);color:var(--ngink);font-weight:600}
+.tag{font-size:12px;color:var(--sub)}
+.note{font-size:13px;color:var(--sub)}
+footer{margin-top:24px;font-size:13px;color:var(--sub)}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+<h1>2つの表の不一致チェック</h1>
+<p class="lead">2つの表（CSV）を貼ると、キーの列で突き合わせて、<strong>違う行と片方にしかない行だけ</strong>を出します。無料・登録なし。</p>
+
+<div class="card">
+<ol class="how">
+<li>Excel や Google スプレッドシートで、見出しの行ごと表を選んでコピーし、A と B に貼ります（CSV ファイルを選んでも同じです）。</li>
+<li>突き合わせる列（品番・伝票番号・取引先コードなど）を選んで「比べる」を押します。</li>
+<li>違う行・片方にしかない行だけが一覧に出ます。「結果をCSVで保存」で手元に保存できます。</li>
+</ol>
+<p class="note">貼ったデータは、このページの中（あなたのブラウザ）だけで処理し、どこにも送りません。通信はページを開くときだけです。</p>
+</div>
+
+<div class="card">
+<div class="grid">
+<div>
+<label for="a">表A（例: 先月の一覧・自社の記録）</label>
+<textarea id="a" placeholder="ここに表Aを貼る"></textarea>
+<input type="file" id="fa" accept=".csv,.txt,.tsv">
+</div>
+<div>
+<label for="b">表B（例: 今月の一覧・相手の請求）</label>
+<textarea id="b" placeholder="ここに表Bを貼る"></textarea>
+<input type="file" id="fb" accept=".csv,.txt,.tsv">
+</div>
+</div>
+<div class="row">
+<label for="key" style="margin:0">突き合わせる列</label>
+<select id="key"><option value="">（先に表を貼ってください）</option></select>
+<button id="run">比べる</button>
+<button class="sec" id="sample">見本のデータを入れる</button>
+<button class="sec" id="clear">消す</button>
+</div>
+<p class="note">タブ区切り（Excel からのコピー）とカンマ区切り（CSV）のどちらでも読めます。前後の空白は無視します。</p>
+</div>
+
+<div class="card" id="out" hidden>
+<div class="sum" id="sum"></div>
+<div class="tablewrap"><table id="tbl"></table></div>
+<div class="row"><button class="sec" id="save">結果をCSVで保存</button></div>
+</div>
+
+<footer>
+<p>作成: Us.Tool（SmallApp Lab）。毎月の突き合わせを、ボタン1つで動く Excel のマクロや Google スプレッドシートの GAS にすることもできます（たとえば列の名前がちがう表どうしの照合、要確認の行を別のシートに分ける、など）。ご相談は <a href="https://coconala.com/users/6363168" rel="noopener">ココナラのプロフィール</a> から。</p>
+<p class="tag">見本のデータは架空のものです。このツールは無保証です。大切なデータは元のファイルを残したまま使ってください。</p>
+</footer>
+</main>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  function parse(text){
+    text = text.replace(/^﻿/, '').replace(/\r\n?/g, '\n').replace(/\n+$/, '');
+    if (!text.trim()) return {head:[], rows:[]};
+    const first = text.split('\n')[0];
+    const sep = first.includes('\t') ? '\t' : ',';
+    const rows = []; let row = [], cell = '', q = false;
+    for (let i = 0; i < text.length; i++){
+      const c = text[i];
+      if (q){
+        if (c === '"' && text[i+1] === '"'){ cell += '"'; i++; }
+        else if (c === '"'){ q = false; }
+        else cell += c;
+      } else if (c === '"' && cell === ''){ q = true; }
+      else if (c === sep){ row.push(cell.trim()); cell = ''; }
+      else if (c === '\n'){ row.push(cell.trim()); rows.push(row); row = []; cell = ''; }
+      else cell += c;
+    }
+    row.push(cell.trim()); rows.push(row);
+    const head = rows.shift().map((h, i) => h || ('列' + (i + 1)));
+    return {head, rows: rows.filter(r => r.some(v => v !== ''))};
+  }
+  function refreshKeys(){
+    const A = parse($('a').value), B = parse($('b').value);
+    const common = A.head.filter(h => B.head.includes(h));
+    const sel = $('key'); const prev = sel.value;
+    sel.innerHTML = '';
+    const list = common.length ? common : A.head;
+    if (!list.length){ sel.innerHTML = '<option value="">（先に表を貼ってください）</option>'; return; }
+    list.forEach(h => { const o = document.createElement('option'); o.value = o.textContent = h; sel.appendChild(o); });
+    if (list.includes(prev)) sel.value = prev;
+  }
+  let lastCsv = '';
+  function run(){
+    const A = parse($('a').value), B = parse($('b').value), key = $('key').value;
+    if (!A.head.length || !B.head.length || !key){ alertBox('表AとBを貼って、突き合わせる列を選んでください。'); return; }
+    const ka = A.head.indexOf(key), kb = B.head.indexOf(key);
+    if (ka < 0 || kb < 0){ alertBox('「' + key + '」の列が両方の表にありません。見出しの名前をそろえてください。'); return; }
+    const cols = A.head.filter(h => h !== key && B.head.includes(h));
+    const mapB = new Map(); const dupB = new Set();
+    B.rows.forEach(r => { const k = r[kb] || ''; if (mapB.has(k)) dupB.add(k); mapB.set(k, r); });
+    const seen = new Set(); const out = []; let same = 0;
+    A.rows.forEach(r => {
+      const k = r[ka] || ''; seen.add(k);
+      const rb = mapB.get(k);
+      if (!rb){ out.push({k, kind:'Aだけにある', diffs:[], a:r, b:null}); return; }
+      const diffs = cols.filter(c => (r[A.head.indexOf(c)] || '') !== (rb[B.head.indexOf(c)] || ''));
+      if (diffs.length) out.push({k, kind:'ちがう', diffs, a:r, b:rb}); else same++;
+    });
+    B.rows.forEach(r => { const k = r[kb] || ''; if (!seen.has(k)) out.push({k, kind:'Bだけにある', diffs:[], a:null, b:r}); });
+    const sum = $('sum'); sum.innerHTML = '';
+    [['一致', same], ['ちがう', out.filter(o => o.kind === 'ちがう').length], ['Aだけにある', out.filter(o => o.kind === 'Aだけにある').length], ['Bだけにある', out.filter(o => o.kind === 'Bだけにある').length]]
+      .forEach(([t, n]) => { const s = document.createElement('span'); s.className = 'pill'; s.textContent = t + ' ' + n + '件'; sum.appendChild(s); });
+    if (dupB.size){ const s = document.createElement('span'); s.className = 'pill'; s.textContent = '表Bでキーが重複: ' + [...dupB].slice(0, 5).join(', '); sum.appendChild(s); }
+    const tbl = $('tbl'); tbl.innerHTML = '';
+    const head = [key, '結果'].concat(cols.flatMap(c => [c + '（A）', c + '（B）']));
+    const tr = document.createElement('tr'); head.forEach(h => { const th = document.createElement('th'); th.textContent = h; tr.appendChild(th); }); tbl.appendChild(tr);
+    const csv = [head];
+    out.forEach(o => {
+      const r = document.createElement('tr'); const line = [o.k, o.kind];
+      [o.k, o.kind].forEach((v, i) => { const td = document.createElement('td'); td.textContent = v; if (i === 1) td.className = 'ng'; r.appendChild(td); });
+      cols.forEach(c => {
+        const va = o.a ? (o.a[A.head.indexOf(c)] || '') : '', vb = o.b ? (o.b[B.head.indexOf(c)] || '') : '';
+        [va, vb].forEach(v => { const td = document.createElement('td'); td.textContent = v; if (o.diffs.includes(c)) td.className = 'ng'; r.appendChild(td); line.push(v); });
+      });
+      tbl.appendChild(r); csv.push(line);
+    });
+    if (!out.length){ const r = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = head.length; td.textContent = 'ちがう行はありませんでした。'; r.appendChild(td); tbl.appendChild(r); }
+    lastCsv = csv.map(l => l.map(v => /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v).join(',')).join('\r\n');
+    $('out').hidden = false; $('out').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  function alertBox(msg){ const sum = $('sum'); sum.innerHTML = ''; const s = document.createElement('span'); s.className = 'pill'; s.textContent = msg; sum.appendChild(s); $('tbl').innerHTML = ''; $('out').hidden = false; }
+  function loadFile(input, target){
+    const f = input.files[0]; if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      let t = rd.result;
+      if (t.includes('�')){ const r2 = new FileReader(); r2.onload = () => { $(target).value = r2.result; refreshKeys(); }; r2.readAsText(f, 'shift_jis'); return; }
+      $(target).value = t; refreshKeys();
+    };
+    rd.readAsText(f, 'utf-8');
+  }
+  $('a').addEventListener('input', refreshKeys); $('b').addEventListener('input', refreshKeys);
+  $('fa').addEventListener('change', () => loadFile($('fa'), 'a'));
+  $('fb').addEventListener('change', () => loadFile($('fb'), 'b'));
+  $('run').addEventListener('click', run);
+  $('clear').addEventListener('click', () => { $('a').value = ''; $('b').value = ''; $('out').hidden = true; refreshKeys(); });
+  $('sample').addEventListener('click', () => {
+    $('a').value = '品番,品名,数量,単価\nA-100,コピー用紙,10,550\nA-101,トナー,2,9000\nA-102,封筒,500,7\nA-103,保存容器,40,220\nA-104,ファイル,30,99';
+    $('b').value = '品番,品名,数量,単価\nA-100,コピー用紙,10,550\nA-101,トナー,2,8000\nA-102,封筒,50,7\nA-104,ファイル,30,99\nA-105,紙皿,20,90';
+    refreshKeys(); $('key').value = '品番'; run();
+  });
+  $('save').addEventListener('click', () => {
+    if (!lastCsv) return;
+    const blob = new Blob(['﻿' + lastCsv], {type:'text/csv'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'mismatch.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+})();
+</script>
+</body>
+</html>

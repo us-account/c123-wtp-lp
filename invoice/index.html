@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>請求書の自動作成（取引一覧CSVから取引先ごとにまとめて・無料）｜Us.Tool</title>
+<meta name="description" content="取引一覧のCSVを読み込むと、取引先ごとの請求書をまとめて作り、印刷やPDF保存ができます。インボイスの登録番号・税率ごとの合計・消費税額に対応。データはこのブラウザの外に送りません。">
+<link rel="canonical" href="https://us-account.github.io/c123-wtp-lp/invoice/">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1f2a44;--sub:#5b6476;--line:#d5dbe3;--accent:#0f7c7a;--ng:#fde2e2;--ngink:#b42318;--ok:#dff3f2}
+@media (prefers-color-scheme:dark){:root{--bg:#14181f;--card:#1d232c;--ink:#e6e9ee;--sub:#a3acba;--line:#333c48;--accent:#4fc1bd;--ng:#4a2323;--ngink:#ff9a8f;--ok:#1f3b3a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;line-height:1.6}
+main{max-width:1080px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.5rem;margin:0 0 4px}
+h2{font-size:1.1rem;margin:0 0 8px}
+.lead{color:var(--sub);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+ol.how{margin:0;padding-left:1.3em}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+label{font-weight:600;display:block;margin-bottom:4px}
+.f label{font-size:13px;margin:0 0 2px}
+.f input,.f textarea{width:100%;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.f textarea{min-height:56px;font-family:inherit}
+textarea#csv{width:100%;min-height:180px;font-family:ui-monospace,Consolas,monospace;font-size:13px;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+button{background:var(--accent);color:#fff;border:0;border-radius:6px;padding:8px 14px;font-size:14px;cursor:pointer}
+button.sec{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+select,input[type=file]{font-size:14px}
+select{padding:6px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.map{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:8px}
+.map label{font-size:13px;margin:0}
+.map select{width:100%}
+.sum{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.pill{border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:13px}
+.pill.ng{background:var(--ng);color:var(--ngink);border-color:transparent}
+.tag{font-size:12px;color:var(--sub)}
+.note{font-size:13px;color:var(--sub)}
+footer{margin-top:24px;font-size:13px;color:var(--sub)}
+a{color:var(--accent)}
+/* 請求書（紙）: 画面でも印刷でも白地に黒 */
+.inv{background:#fff;color:#111;border:1px solid var(--line);border-radius:4px;padding:28px 32px;margin:16px auto;max-width:800px;font-size:13px}
+.inv h3{text-align:center;font-size:22px;letter-spacing:.4em;margin:0 0 16px}
+.inv .top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.inv .to{font-size:16px;border-bottom:1px solid #111;padding-bottom:2px;margin:8px 0}
+.inv .from{text-align:right;white-space:pre-line;font-size:12px}
+.inv .meta{font-size:12px;text-align:right}
+.inv .total{font-size:18px;border:2px solid #111;display:inline-block;padding:6px 14px;margin:12px 0}
+.inv table{border-collapse:collapse;width:100%;margin-top:8px}
+.inv th,.inv td{border:1px solid #888;padding:4px 6px;text-align:left}
+.inv th{background:#eee}
+.inv td.n,.inv th.n{text-align:right;white-space:nowrap}
+.inv .taxsum{width:auto;min-width:60%;margin-left:auto}
+.inv .foot{margin-top:12px;white-space:pre-line;font-size:12px}
+.inv .one{float:right}
+@media screen and (max-width:760px){.inv{padding:16px 12px;overflow-x:auto}.inv .from{text-align:left}.inv td,.inv th{font-size:12px}}
+@media print{
+  @page{size:A4;margin:12mm}
+  body{background:#fff}
+  main>*:not(#out){display:none!important}
+  #out{border:0;padding:0;margin:0;background:#fff}
+  #out>*:not(#invoices){display:none!important}
+  .inv{border:0;margin:0;padding:0;max-width:none;page-break-after:always;break-after:page}
+  .inv:last-child{page-break-after:auto;break-after:auto}
+  .inv .one{display:none}
+  body.only .inv:not(.pick){display:none}
+}
+</style>
+</head>
+<body>
+<main>
+<h1>請求書の自動作成（取引一覧CSVから）</h1>
+<p class="lead">取引の一覧（CSV）を読み込むと、<strong>取引先ごとの請求書をまとめて</strong>作ります。印刷・PDF保存ができます。インボイス（適格請求書）の記載項目に対応。無料・登録なし。</p>
+
+<div class="card">
+<ol class="how">
+<li>下の「発行者の情報」に、自社名・登録番号（T＋13桁）・振込先などを入れます。</li>
+<li>取引一覧の CSV を選ぶか、Excel や Google スプレッドシートから見出しの行ごとコピーして貼ります。列は「取引先・日付・品目・数量・単価・税率」があれば読めます（名前がちがう列は、どの列かを選べます）。</li>
+<li>「請求書を作る」を押すと、取引先ごとに1枚ずつできます。「まとめて印刷 / PDF保存」で、印刷の画面から「PDFに保存」を選べます。</li>
+</ol>
+<p class="note">読み込んだデータは、このページの中（あなたのブラウザ）だけで処理し、どこにも送りません。通信はページを開くときだけです。</p>
+</div>
+
+<div class="card">
+<h2>発行者の情報</h2>
+<div class="grid">
+<div class="f"><label for="iname">発行者名（自社名）</label><input id="iname" placeholder="例: 見本株式会社"></div>
+<div class="f"><label for="ireg">登録番号（T＋13桁）</label><input id="ireg" placeholder="例: T0000000000000" inputmode="latin"></div>
+<div class="f"><label for="iaddr">住所・電話・メール</label><textarea id="iaddr" placeholder="〒000-0000 ○○県○○市…&#10;TEL 00-0000-0000"></textarea></div>
+<div class="f"><label for="ibank">振込先</label><textarea id="ibank" placeholder="○○銀行 ○○支店 普通 0000000 ミホン（カ"></textarea></div>
+<div class="f"><label for="idate">発行日</label><input id="idate" type="date"></div>
+<div class="f"><label for="idue">お支払期限</label><input id="idue" type="date"></div>
+<div class="f"><label for="ititle">件名</label><input id="ititle" placeholder="例: 2026年10月分のご請求"></div>
+<div class="f"><label for="ino">請求書番号の頭</label><input id="ino" placeholder="例: 202610-"></div>
+</div>
+<div class="row">
+<label for="mode" style="margin:0">単価は</label>
+<select id="mode"><option value="ex">税抜</option><option value="in">税込</option></select>
+<label for="rnd" style="margin:0">消費税の端数</label>
+<select id="rnd"><option value="floor">切り捨て</option><option value="round">四捨五入</option><option value="ceil">切り上げ</option></select>
+<label style="margin:0;font-weight:400"><input type="checkbox" id="remember"> 発行者の情報をこのブラウザに覚えておく</label>
+</div>
+<p class="note">消費税は、1枚の請求書ごと・税率ごとに1回だけ端数を処理します（インボイスの決まりどおり）。</p>
+</div>
+
+<div class="card">
+<h2>取引一覧</h2>
+<textarea id="csv" placeholder="取引先,日付,品目,数量,単価,税率&#10;株式会社○○,2026/10/03,コピー用紙,10,550,10"></textarea>
+<div class="row">
+<input type="file" id="file" accept=".csv,.txt,.tsv">
+<button class="sec" id="sample">見本のデータを入れる</button>
+<a href="sample.csv" download>見本のCSVをダウンロード</a>
+</div>
+<div class="map" id="map"></div>
+<div class="row">
+<button id="run">請求書を作る</button>
+<button class="sec" id="clear">消す</button>
+</div>
+<p class="note">タブ区切り（Excel からのコピー）とカンマ区切り（CSV）のどちらでも読めます。Shift_JIS の CSV も読めます。税率は「10」「8」「10%」「8%」「軽減」のどれでも構いません。「数量」「単価」のかわりに「金額」の列だけでも作れます。</p>
+</div>
+
+<div class="card" id="out" hidden>
+<div class="sum" id="sum"></div>
+<div class="row">
+<button id="print">まとめて印刷 / PDF保存</button>
+<button class="sec" id="savecsv">合計の一覧をCSVで保存</button>
+</div>
+<div id="invoices"></div>
+</div>
+
+<footer>
+<p>作成: Us.Tool（SmallApp Lab）。毎月の請求書作りを、ボタン1つで動く Excel のマクロや Google スプレッドシートの GAS にすることもできます（たとえば販売管理の書き出しをそのまま読む、取引先ごとの PDF をフォルダーに保存する、締め日ごとに分ける、など）。ご相談は <a href="https://coconala.com/users/6363168" rel="noopener">ココナラのプロフィール</a> から。</p>
+<p>同じものを御社の列名・書式に合わせて作ります。小さいものは3,000円から: <a href="https://coconala.com/services/4478748" rel="noopener">ココナラで相談する</a> ／ <a href="mailto:sales@ustoolstudio.com">メールで相談する</a></p>
+<p>使い方の例: <a href="case-monthly-invoices.html">毎月の請求書作りを、この道具でやってみた（架空の会社の例）</a></p>
+<p class="tag">見本のデータと会社名は架空のものです。このツールは無保証です。税務の判断は税理士などにご確認ください。発行前に金額と記載内容を必ずご確認ください。</p>
+</footer>
+</main>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const yen = n => n.toLocaleString('ja-JP');
+  function parse(text){
+    text = text.replace(/^﻿/, '').replace(/\r\n?/g, '\n').replace(/\n+$/, '');
+    if (!text.trim()) return {head:[], rows:[]};
+    const first = text.split('\n')[0];
+    const sep = first.includes('\t') ? '\t' : ',';
+    const rows = []; let row = [], cell = '', q = false;
+    for (let i = 0; i < text.length; i++){
+      const c = text[i];
+      if (q){
+        if (c === '"' && text[i+1] === '"'){ cell += '"'; i++; }
+        else if (c === '"'){ q = false; }
+        else cell += c;
+      } else if (c === '"' && cell === ''){ q = true; }
+      else if (c === sep){ row.push(cell.trim()); cell = ''; }
+      else if (c === '\n'){ row.push(cell.trim()); rows.push(row); row = []; cell = ''; }
+      else cell += c;
+    }
+    row.push(cell.trim()); rows.push(row);
+    const head = rows.shift().map((h, i) => h || ('列' + (i + 1)));
+    return {head, rows: rows.filter(r => r.some(v => v !== ''))};
+  }
+  const FIELDS = [
+    ['client', '取引先', /取引先|得意先|顧客|請求先|会社名|お客様|宛先/],
+    ['date', '日付', /日付|年月日|取引日|納品日|売上日|date/i],
+    ['item', '品目', /品目|品名|商品|内容|摘要|項目|件名/],
+    ['qty', '数量', /数量|個数|qty/i],
+    ['price', '単価', /単価|price/i],
+    ['amount', '金額（数量×単価のかわり）', /^金額|小計|amount/i],
+    ['rate', '税率', /税率|税区分|消費税率/]
+  ];
+  function num(v){ if (v == null) return NaN; v = String(v).replace(/[０-９．，－]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)).replace(/[,円¥\s]/g, ''); return v === '' ? NaN : Number(v); }
+  function rateOf(v){
+    v = String(v || '').replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+    if (/軽減|8/.test(v)) return 8;
+    if (/10|標準/.test(v)) return 10;
+    if (/^0|非課税|不課税|対象外/.test(v)) return 0;
+    return null;
+  }
+  function roundBy(x, how){ const e = 1e-9; return how === 'ceil' ? Math.ceil(x - e) : how === 'round' ? Math.round(x + e) : Math.floor(x + e); }
+  // 1枚の請求書の計算。lines: [{amount, rate}] / mode: 'ex' 税抜 | 'in' 税込
+  function calcInvoice(lines, mode, how){
+    const by = {};
+    lines.forEach(l => { (by[l.rate] = by[l.rate] || {rate:l.rate, sum:0}).sum += l.amount; });
+    const rates = Object.values(by).sort((a, b) => b.rate - a.rate);
+    rates.forEach(r => {
+      if (mode === 'in'){ r.tax = roundBy(r.sum * r.rate / (100 + r.rate), how); r.base = r.sum - r.tax; r.incl = r.sum; }
+      else { r.base = r.sum; r.tax = roundBy(r.sum * r.rate / 100, how); r.incl = r.base + r.tax; }
+    });
+    const base = rates.reduce((s, r) => s + r.base, 0), tax = rates.reduce((s, r) => s + r.tax, 0);
+    return {rates, base, tax, total: base + tax};
+  }
+  window.__invoiceCalc = calcInvoice;
+
+  let data = {head:[], rows:[]};
+  function buildMap(){
+    data = parse($('csv').value);
+    const box = $('map'); box.innerHTML = '';
+    if (!data.head.length) return;
+    FIELDS.forEach(([k, name, rx]) => {
+      const d = document.createElement('div');
+      const l = document.createElement('label'); l.textContent = name; l.htmlFor = 'm_' + k;
+      const s = document.createElement('select'); s.id = 'm_' + k;
+      s.innerHTML = '<option value="-1">（なし）</option>';
+      data.head.forEach((h, i) => { const o = document.createElement('option'); o.value = i; o.textContent = h; s.appendChild(o); });
+      const hit = data.head.findIndex(h => rx.test(h));
+      s.value = hit;
+      d.appendChild(l); d.appendChild(s); box.appendChild(d);
+    });
+  }
+  const col = k => { const s = $('m_' + k); return s ? Number(s.value) : -1; };
+  let lastSummary = [];
+  function run(){
+    if (!data.head.length) buildMap();
+    const sum = $('sum'); sum.innerHTML = ''; $('invoices').innerHTML = '';
+    const pill = (t, ng) => { const s = document.createElement('span'); s.className = 'pill' + (ng ? ' ng' : ''); s.textContent = t; sum.appendChild(s); };
+    $('out').hidden = false;
+    const c = {client: col('client'), date: col('date'), item: col('item'), qty: col('qty'), price: col('price'), amount: col('amount'), rate: col('rate')};
+    if (c.client < 0){ pill('「取引先」の列を選んでください。', true); return; }
+    if (c.amount < 0 && (c.qty < 0 || c.price < 0)){ pill('「数量」と「単価」、または「金額」の列を選んでください。', true); return; }
+    const reg = $('ireg').value.trim().replace(/[Ｔｔ]/, 'T').replace(/[０-９]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0)).replace(/[-\s]/g, '');
+    if (!/^T\d{13}$/.test(reg)) pill('登録番号が「T＋13桁」の形ではありません（インボイスとして出すときは必要です）', true);
+    if (!$('iname').value.trim()) pill('発行者名が空です', true);
+    const groups = new Map(); const bad = [];
+    data.rows.forEach((r, i) => {
+      const client = (r[c.client] || '').trim(); if (!client){ bad.push((i + 2) + '行目: 取引先が空'); return; }
+      let qty = c.qty >= 0 ? num(r[c.qty]) : NaN, price = c.price >= 0 ? num(r[c.price]) : NaN, amount;
+      if (c.amount >= 0 && !isNaN(num(r[c.amount]))) amount = num(r[c.amount]);
+      else if (!isNaN(qty) && !isNaN(price)) amount = Math.round(qty * price);
+      else { bad.push((i + 2) + '行目: 金額が読めない'); return; }
+      let rate = c.rate >= 0 ? rateOf(r[c.rate]) : 10;
+      if (rate === null){ bad.push((i + 2) + '行目: 税率「' + r[c.rate] + '」が読めないので10%にしました'); rate = 10; }
+      if (!groups.has(client)) groups.set(client, []);
+      groups.get(client).push({date: c.date >= 0 ? r[c.date] : '', item: c.item >= 0 ? r[c.item] : '', qty: isNaN(qty) ? '' : qty, price: isNaN(price) ? '' : price, amount, rate});
+    });
+    const mode = $('mode').value, how = $('rnd').value;
+    lastSummary = [['請求書番号', '取引先', '明細数', '税抜合計', '消費税', '請求金額（税込）']];
+    let n = 0, grand = 0;
+    groups.forEach((lines, client) => {
+      n++;
+      const r = calcInvoice(lines, mode, how);
+      const no = ($('ino').value || '') + String(n).padStart(3, '0');
+      grand += r.total;
+      lastSummary.push([no, client, lines.length, r.base, r.tax, r.total]);
+      $('invoices').appendChild(renderInvoice(client, no, lines, r, reg, mode));
+    });
+    pill('請求書 ' + n + '枚'); pill('明細 ' + data.rows.length + '行'); pill('請求金額の合計 ' + yen(grand) + '円');
+    bad.slice(0, 8).forEach(b => pill(b, true)); if (bad.length > 8) pill('ほか ' + (bad.length - 8) + '件', true);
+    $('out').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  function el(tag, attrs, text){ const e = document.createElement(tag); if (attrs) Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v)); if (text != null) e.textContent = text; return e; }
+  function fmtDate(v){ if (!v) return ''; const m = String(v).match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? m[1] + '年' + Number(m[2]) + '月' + Number(m[3]) + '日' : v; }
+  function renderInvoice(client, no, lines, r, reg, mode){
+    const d = el('section', {class: 'inv'});
+    const one = el('button', {class: 'sec one', type: 'button'}, 'この1枚だけ印刷');
+    one.addEventListener('click', () => { document.querySelectorAll('.inv.pick').forEach(x => x.classList.remove('pick')); d.classList.add('pick'); document.body.classList.add('only'); window.print(); document.body.classList.remove('only'); d.classList.remove('pick'); });
+    d.appendChild(one);
+    d.appendChild(el('h3', null, '請求書'));
+    const top = el('div', {class: 'top'});
+    const left = el('div');
+    left.appendChild(el('div', {class: 'to'}, client + '　御中'));
+    if ($('ititle').value.trim()) left.appendChild(el('div', null, '件名: ' + $('ititle').value.trim()));
+    left.appendChild(el('div', null, '下記のとおりご請求申し上げます。'));
+    const tot = el('div', {class: 'total'}, 'ご請求金額　' + yen(r.total) + ' 円（税込）'); left.appendChild(tot);
+    if ($('idue').value) left.appendChild(el('div', null, 'お支払期限: ' + fmtDate($('idue').value)));
+    const right = el('div');
+    right.appendChild(el('div', {class: 'meta'}, '請求書番号: ' + no));
+    right.appendChild(el('div', {class: 'meta'}, '発行日: ' + fmtDate($('idate').value)));
+    right.appendChild(el('div', {class: 'from'}, [$('iname').value.trim(), reg ? '登録番号: ' + reg : '', $('iaddr').value.trim()].filter(Boolean).join('\n')));
+    top.appendChild(left); top.appendChild(right); d.appendChild(top);
+    const t = el('table');
+    const hr = el('tr'); ['日付', '品目', '数量', '単価', '金額（' + (mode === 'in' ? '税込' : '税抜') + '）', '税率'].forEach((h, i) => hr.appendChild(el('th', i >= 2 ? {class: 'n'} : null, h))); t.appendChild(hr);
+    let reduced = false;
+    lines.forEach(l => {
+      const tr = el('tr');
+      if (l.rate === 8) reduced = true;
+      tr.appendChild(el('td', null, l.date)); tr.appendChild(el('td', null, l.item + (l.rate === 8 ? ' ※' : '')));
+      tr.appendChild(el('td', {class: 'n'}, l.qty === '' ? '' : yen(l.qty))); tr.appendChild(el('td', {class: 'n'}, l.price === '' ? '' : yen(l.price)));
+      tr.appendChild(el('td', {class: 'n'}, yen(l.amount))); tr.appendChild(el('td', {class: 'n'}, l.rate + '%'));
+      t.appendChild(tr);
+    });
+    d.appendChild(t);
+    const s = el('table', {class: 'taxsum'});
+    const sh = el('tr'); ['税率', '対象金額（税抜）', '消費税額', '税込'].forEach((h, i) => sh.appendChild(el('th', i ? {class: 'n'} : null, h))); s.appendChild(sh);
+    r.rates.forEach(x => { const tr = el('tr'); tr.appendChild(el('td', null, x.rate + '%対象' + (x.rate === 8 ? '（軽減税率）' : ''))); [x.base, x.tax, x.incl].forEach(v => tr.appendChild(el('td', {class: 'n'}, yen(v) + ' 円'))); s.appendChild(tr); });
+    const ft = el('tr'); ft.appendChild(el('th', null, '合計')); [r.base, r.tax, r.total].forEach(v => ft.appendChild(el('th', {class: 'n'}, yen(v) + ' 円'))); s.appendChild(ft);
+    d.appendChild(s);
+    const notes = [];
+    if (reduced) notes.push('※は軽減税率（8%）の対象です。');
+    if ($('ibank').value.trim()) notes.push('お振込先: ' + $('ibank').value.trim());
+    if (notes.length) d.appendChild(el('div', {class: 'foot'}, notes.join('\n')));
+    return d;
+  }
+  const KEEP = ['iname', 'ireg', 'iaddr', 'ibank', 'ititle', 'ino'];
+  function save(){ try { if ($('remember').checked) localStorage.setItem('ustool_invoice_issuer', JSON.stringify(Object.fromEntries(KEEP.map(k => [k, $(k).value])))); else localStorage.removeItem('ustool_invoice_issuer'); } catch (e) {} }
+  try { const v = JSON.parse(localStorage.getItem('ustool_invoice_issuer') || 'null'); if (v){ KEEP.forEach(k => { if (v[k] != null) $(k).value = v[k]; }); $('remember').checked = true; } } catch (e) {}
+  KEEP.concat(['remember']).forEach(k => $(k).addEventListener('change', save));
+  const today = new Date(); const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  if (!$('idate').value) $('idate').value = iso(today);
+  if (!$('idue').value) $('idue').value = iso(new Date(today.getFullYear(), today.getMonth() + 2, 0));
+  function loadFile(){
+    const f = $('file').files[0]; if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      const t = rd.result;
+      if (t.includes('�')){ const r2 = new FileReader(); r2.onload = () => { $('csv').value = r2.result; buildMap(); }; r2.readAsText(f, 'shift_jis'); return; }
+      $('csv').value = t; buildMap();
+    };
+    rd.readAsText(f, 'utf-8');
+  }
+  $('csv').addEventListener('input', buildMap);
+  $('file').addEventListener('change', loadFile);
+  $('run').addEventListener('click', run);
+  $('print').addEventListener('click', () => window.print());
+  $('clear').addEventListener('click', () => { $('csv').value = ''; $('out').hidden = true; buildMap(); });
+  $('sample').addEventListener('click', async () => {
+    let t = '';
+    try { const res = await fetch('sample.csv'); if (res.ok) t = await res.text(); } catch (e) {}
+    if (!t) t = SAMPLE;
+    $('csv').value = t;
+    if (!$('iname').value) $('iname').value = '見本株式会社（架空）';
+    if (!$('ireg').value) $('ireg').value = 'T0000000000000';
+    if (!$('ititle').value) $('ititle').value = '2026年10月分のご請求';
+    if (!$('ino').value) $('ino').value = '202610-';
+    buildMap(); run();
+  });
+  const SAMPLE = '取引先,日付,品目,数量,単価,税率\n株式会社みなと商事（架空）,2026/10/03,コピー用紙 A4 500枚,10,550,10\n株式会社みなと商事（架空）,2026/10/03,お茶 500ml 24本,2,2480,8\nさくら食堂（架空）,2026/10/01,米 10kg,4,4980,8';
+  $('savecsv').addEventListener('click', () => {
+    if (lastSummary.length < 2) return;
+    const csv = lastSummary.map(l => l.map(v => /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : v).join(',')).join('\r\n');
+    const blob = new Blob(['﻿' + csv], {type:'text/csv'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'invoice_totals.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+})();
+</script>
+</body>
+</html>

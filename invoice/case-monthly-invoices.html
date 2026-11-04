@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>毎月の請求書作りを取引一覧CSVからまとめて作る（架空の会社で試した記録）｜Us.Tool</title>
+<meta name="description" content="取引先30社・明細300行の架空データで、取引一覧CSVから請求書30枚をまとめて作り、PDFにするまでを試しました。測った処理時間、手で検算した結果、手作業で残る操作を書いています。">
+<link rel="canonical" href="https://us-account.github.io/c123-wtp-lp/invoice/case-monthly-invoices.html">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1f2a44;--sub:#5b6476;--line:#d5dbe3;--accent:#0f7c7a}
+@media (prefers-color-scheme:dark){:root{--bg:#14181f;--card:#1d232c;--ink:#e6e9ee;--sub:#a3acba;--line:#333c48;--accent:#4fc1bd}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI","Yu Gothic UI","Meiryo",sans-serif;line-height:1.75}
+main{max-width:820px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.45rem;margin:0 0 4px;line-height:1.4}
+h2{font-size:1.15rem;margin:28px 0 8px}
+.lead{color:var(--sub);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+th{background:var(--bg)}
+td.n{text-align:right;white-space:nowrap}
+.note{font-size:13px;color:var(--sub)}
+.btn{display:inline-block;background:var(--accent);color:#fff;border-radius:6px;padding:8px 14px;text-decoration:none}
+footer{margin-top:24px;font-size:13px;color:var(--sub)}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+<h1>毎月の請求書作りを、取引一覧CSVからまとめて作る</h1>
+<p class="lead">架空の会社の例で試した記録です。登場する会社名・取引先・金額はすべて架空のものです。</p>
+
+<div class="card">
+<p><strong>この記事で分かること</strong></p>
+<ul>
+<li>取引先30社・明細300行の取引一覧から、請求書30枚を作って PDF にするまでの手順</li>
+<li>実際に測った処理時間と、合計・消費税額を手で検算した結果</li>
+<li>道具を使っても人の手で残る操作</li>
+</ul>
+<p><a class="btn" href="./">請求書の自動作成ツールを開く（無料）</a></p>
+</div>
+
+<h2>架空の会社の状況</h2>
+<p>「見本株式会社（架空）」は、事務用品と食品を法人や飲食店に卸しています。毎月末に、販売管理から1か月分の取引一覧を CSV で書き出し、それを見ながら取引先ごとに Excel の請求書のひな形へ写しています。取引先は30社、明細は月に約300行です。食品は軽減税率（8%）、それ以外は10%で、1枚の請求書に両方が混ざります。</p>
+<p>手で写すときに手間がかかるのは、次の3つです。</p>
+<ol>
+<li>取引先ごとに行を抜き出して、ひな形に貼る</li>
+<li>税率ごとに合計を分けて、消費税額を出す（インボイスでは、1枚ごと・税率ごとに端数処理は1回）</li>
+<li>1枚ずつ PDF にして保存する</li>
+</ol>
+
+<h2>やったこと</h2>
+<ol>
+<li>取引一覧の CSV（列は「取引先・日付・品目・数量・単価・税率」）を用意しました。中身は試験用に作った架空のデータです。</li>
+<li><a href="./">ツール</a>を開き、発行者名と登録番号（見本の値 T0000000000000）を入れました。この欄は「このブラウザに覚えておく」にチェックすると、翌月は入れ直さずに済みます。</li>
+<li>CSV を選んで「請求書を作る」を押しました。</li>
+<li>「まとめて印刷 / PDF保存」を押し、印刷の画面で「PDFに保存」を選びました。</li>
+</ol>
+
+<h2>測った結果</h2>
+<p>Windows の PC で、Microsoft Edge を使って3回測りました。</p>
+<div class="tablewrap"><table>
+<tr><th>測ったもの</th><th>結果</th></tr>
+<tr><td>CSV を選んでから、請求書30枚が画面に出るまで</td><td class="n">0.12〜0.18秒</td></tr>
+<tr><td>30枚を PDF にする処理</td><td class="n">約0.23秒（30ページ）</td></tr>
+<tr><td>30社分の請求金額の合計</td><td class="n">1,797,148円（3回とも同じ）</td></tr>
+</table></div>
+<p class="note">PDF 保存の画面でファイル名を決めて保存する時間は、人の操作なので含めていません。</p>
+
+<h2>計算が合っているかの確認</h2>
+<p>ツールとは別に、表計算と同じやり方で取引先ごと・税率ごとに合計し、消費税は税率ごとに1回だけ切り捨てて計算し直しました。30社の合計は 1,797,148円で、ツールの結果と一致しました。</p>
+<p>ツールについている見本データ（架空の3社）は、次のとおり手で検算しました。</p>
+<div class="tablewrap"><table>
+<tr><th>取引先（架空）</th><th>10%対象</th><th>8%対象</th><th>消費税</th><th>請求金額</th></tr>
+<tr><td>株式会社みなと商事</td><td class="n">15,300円</td><td class="n">8,848円</td><td class="n">1,530円＋707円</td><td class="n">26,385円</td></tr>
+<tr><td>あおば設計事務所</td><td class="n">6,985円</td><td class="n">—</td><td class="n">698円</td><td class="n">7,683円</td></tr>
+<tr><td>さくら食堂</td><td class="n">4,188円</td><td class="n">41,541円</td><td class="n">418円＋3,323円</td><td class="n">49,470円</td></tr>
+</table></div>
+<p class="note">例: さくら食堂の8%対象は 19,920＋19,920＋1,701＝41,541円。消費税は 41,541×0.08＝3,323.28 なので切り捨てて3,323円です。</p>
+
+<h2>道具を使っても残る操作</h2>
+<ul>
+<li>販売管理から取引一覧を CSV で書き出す</li>
+<li>CSV を選ぶ・ボタンを2回押す・PDF の保存先を決める</li>
+<li>できた請求書を目で確かめる（金額・宛名・登録番号）</li>
+<li>取引先へ送る（このツールは送信しません）</li>
+</ul>
+<p>30枚は1つの PDF にまとまります。取引先ごとに別の PDF が要るときは、各請求書の「この1枚だけ印刷」を使います。30社だと30回の保存になるので、そこは手間が残ります。</p>
+
+<h2>今までの時間と比べるには</h2>
+<p>この記事では、人が手で請求書を作る時間は測っていません。会社ごとにひな形も手順もちがうためです。比べるときは、次の2つを測ってみてください。</p>
+<ol>
+<li>今のやり方で、請求書1枚を作って PDF にするまでの時間（ストップウォッチで1枚分）× 毎月の枚数</li>
+<li>このツールで、CSV を書き出してから PDF を保存し終えるまでの時間</li>
+</ol>
+
+<h2>うまくいかないとき</h2>
+<ul>
+<li>列の名前がちがう: 「請求書を作る」の上で、どの列が取引先・数量・単価かを選べます。</li>
+<li>単価が税込: 「単価は」を「税込」にすると、税率ごとの税込合計から消費税額を出します。</li>
+<li>文字化けする: Shift_JIS の CSV も自動で読み直します。</li>
+</ul>
+
+<footer>
+<p>作成: Us.Tool（SmallApp Lab）。毎月の請求書作りを、ボタン1つで動く Excel のマクロや Google スプレッドシートの GAS にすることもできます（販売管理の書き出しをそのまま読む、取引先ごとの PDF をフォルダーに分けて保存する、締め日ごとに分ける、など）。ご相談は <a href="https://coconala.com/users/6363168" rel="noopener">ココナラのプロフィール</a> から。</p>
+<p>同じものを御社の列名・書式に合わせて作ります。小さいものは3,000円から: <a href="https://coconala.com/services/4478748" rel="noopener">ココナラで相談する</a> ／ <a href="mailto:sales@ustoolstudio.com">メールで相談する</a></p>
+<p class="note">この記事の会社・取引先・金額は架空のものです。税務の判断は税理士などにご確認ください。</p>
+</footer>
+</main>
+</body>
+</html>

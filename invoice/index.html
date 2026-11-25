@@ -67,6 +67,7 @@ a{color:var(--accent)}
   body.only .inv:not(.pick){display:none}
 }
 </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-28112XXNX8"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-28112XXNX8',{anonymize_ip:true});</script>
 </head>
 <body>
 <main>
@@ -79,7 +80,7 @@ a{color:var(--accent)}
 <li>取引一覧の CSV を選ぶか、Excel や Google スプレッドシートから見出しの行ごとコピーして貼ります。列は「取引先・日付・品目・数量・単価・税率」があれば読めます（名前がちがう列は、どの列かを選べます）。</li>
 <li>「請求書を作る」を押すと、取引先ごとに1枚ずつできます。「まとめて印刷 / PDF保存」で、印刷の画面から「PDFに保存」を選べます。</li>
 </ol>
-<p class="note">読み込んだデータは、このページの中（あなたのブラウザ）だけで処理し、どこにも送りません。通信はページを開くときだけです。</p>
+<p class="note">読み込んだデータは、このページの中（あなたのブラウザ）だけで処理し、どこにも送りません。閲覧数と使われた回数だけを数えるために Google アナリティクスを使っています（貼ったデータ・ファイルの中身は送りません。<a href="../privacy.html">詳しく</a>）。</p>
 </div>
 
 <div class="card">
@@ -335,5 +336,6 @@ a{color:var(--accent)}
   });
 })();
 </script>
+<script>document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('run');if(b)b.addEventListener('click',function(){if(window.gtag)gtag('event','tool_run',{tool:'invoice'});});});</script>
 </body>
 </html>

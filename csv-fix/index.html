@@ -29,6 +29,7 @@ td{border:1px solid var(--line);padding:6px 8px;text-align:left;white-space:nowr
 footer{margin-top:24px;font-size:13px;color:var(--sub)}
 a{color:var(--accent)}
 </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-28112XXNX8"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-28112XXNX8',{anonymize_ip:true});</script>
 </head>
 <body>
 <main>
@@ -41,7 +42,7 @@ a{color:var(--accent)}
 <li>下の見本で、日本語が読めるかを確かめます。読めないときは「元の文字コード」を変えます。</li>
 <li>「直したCSVを保存」を押します。元のファイルは変わりません。</li>
 </ol>
-<p class="note">ファイルはこのページの中（あなたのブラウザ）だけで処理し、どこにも送りません。通信はページを開くときだけです。</p>
+<p class="note">ファイルはこのページの中（あなたのブラウザ）だけで処理し、どこにも送りません。閲覧数と使われた回数だけを数えるために Google アナリティクスを使っています（貼ったデータ・ファイルの中身は送りません。<a href="../privacy.html">詳しく</a>）。</p>
 </div>
 
 <div class="card">
@@ -141,5 +142,6 @@ document.getElementById("save").addEventListener("click", function () {
   URL.revokeObjectURL(a.href);
 });
 </script>
+<script>document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('save');if(b)b.addEventListener('click',function(){if(window.gtag)gtag('event','tool_run',{tool:'csv-fix'});});});</script>
 </body>
 </html>

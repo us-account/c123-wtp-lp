@@ -52,4 +52,16 @@
     <loc>https://us-account.github.io/c123-wtp-lp/invoice/case-monthly-invoices.html</loc>
     <lastmod>2026-11-05</lastmod>
   </url>
+  <url>
+    <loc>https://us-account.github.io/c123-wtp-lp/csv-diff/</loc>
+    <lastmod>2026-11-26</lastmod>
+  </url>
+  <url>
+    <loc>https://us-account.github.io/c123-wtp-lp/csv-fix/</loc>
+    <lastmod>2026-11-26</lastmod>
+  </url>
+  <url>
+    <loc>https://us-account.github.io/c123-wtp-lp/text-normalize/</loc>
+    <lastmod>2026-11-26</lastmod>
+  </url>
 </urlset>
